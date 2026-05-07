@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Savoria{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --warm-white: #FFFDF9;
+            --charcoal: #1C1C1E;
+            --charcoal-soft: #2C2C2E;
+            --accent: #C84B31;
+            --accent-warm: #E8613A;
+            --accent-light: #FDF0EC;
+            --gold: #C9A84C;
+            --green: #2D6A4F;
+            --green-light: #E8F5EF;
+            --text-primary: #1C1C1E;
+            --text-secondary: #6B6B6B;
+            --text-muted: #9E9E9E;
+            --border: #EDE8E0;
+            --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ── Navbar ── */
+        nav {
+            background: var(--warm-white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-brand span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover { background: var(--cream); color: var(--charcoal); }
+
+        .nav-links a.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-links .logout-btn {
+            background: var(--charcoal);
+            color: white;
+            padding: 7px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links .logout-btn:hover { background: var(--accent); color: white; }
+
+        /* ── Page wrapper ── */
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+        /* ── Page header ── */
+        .page-header { margin-bottom: 36px; }
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
+        }
+        .page-header p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--warm-white);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--accent-warm); transform: translateY(-1px); }
+
+        .btn-secondary {
+            background: var(--cream);
+            color: var(--charcoal);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover { background: var(--border); }
+
+        .btn-dark {
+            background: var(--charcoal);
+            color: white;
+        }
+
+        .btn-dark:hover { background: var(--charcoal-soft); transform: translateY(-1px); }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+        }
+
+        .btn-ghost:hover { background: var(--accent-light); }
+
+        /* ── Status pills ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-pending { background: #FFF8E1; color: #F57F17; }
+        .badge-confirmed { background: #E3F2FD; color: #1565C0; }
+        .badge-delivered { background: var(--green-light); color: var(--green); }
+
+        /* ── Price ── */
+        .price {
+            font-weight: 700;
+            color: var(--green);
+            font-size: 1rem;
+        }
+
+        /* ── Form elements ── */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            background: var(--warm-white);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(200, 75, 49, 0.1);
+        }
+
+        /* ── Alert ── */
+        .alert-error {
+            background: #FFF0EE;
+            border: 1px solid #FFCDD2;
+            color: var(--accent);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+        .empty-state p { font-size: 0.95rem; }
+
+        /* ── Divider ── */
+        .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+        /* ── Grid helpers ── */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 18px;
+        }
+
+        @media (max-width: 640px) {
+            nav { padding: 0 20px; }
+            .page { padding: 24px 16px 60px; }
+            .page-header h1 { font-size: 1.6rem; }
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-brand">Sav<span>oria</span></a>
+    <div class="nav-links">
+        {% block nav_links %}{% endblock %}
+    </div>
+</nav>
+
+<div class="page">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

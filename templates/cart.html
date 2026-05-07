@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}My Cart — Savoria{% endblock %}
+
+{% block nav_links %}
+<a href="{% url 'menu' %}">Menu</a>
+<a href="{% url 'customer_dashboard' %}">Dashboard</a>
+<a href="{% url 'logout' %}" class="logout-btn">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+<style>
+    .cart-layout { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+    .cart-item-row { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 10px; transition: box-shadow 0.2s; }
+    .cart-item-row:hover { box-shadow: var(--shadow-md); }
+    .cart-emoji { width: 52px; height: 52px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+    .cart-info { flex: 1; }
+    .cart-info h4 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--charcoal); margin-bottom: 3px; }
+    .qty-controls { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--cream); cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .qty-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+    .qty-num { width: 28px; text-align: center; font-weight: 700; font-size: 0.95rem; }
+    .remove-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px; border-radius: 6px; transition: all 0.15s; margin-left: auto; }
+    .remove-btn:hover { color: var(--accent); background: var(--accent-light); }
+    .summary-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-md); position: sticky; top: 84px; }
+    .summary-card h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; color: var(--charcoal); }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 10px; }
+    .summary-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; color: var(--charcoal); padding-top: 14px; border-top: 1px solid var(--border); margin-top: 6px; margin-bottom: 22px; }
+    .btn-full { width: 100%; padding: 13px; font-size: 0.95rem; justify-content: center; }
+    .alert-msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 0.875rem; font-weight: 500; }
+    .alert-success { background: var(--green-light); color: var(--green); }
+    @media (max-width: 720px) { .cart-layout { grid-template-columns: 1fr; } .summary-card { position: static; } }
+</style>
+
+<div class="page-header">
+    <h1>🛒 My Cart</h1>
+    <p>Review your items before placing the order</p>
+</div>
+
+{% if messages %}
+    {% for msg in messages %}
+    <div class="alert-msg alert-success">{{ msg }}</div>
+    {% endfor %}
+{% endif %}
+
+{% if items %}
+<div class="cart-layout">
+    <div class="cart-items">
+        {% for item in items %}
+        <div class="cart-item-row">
+            <div class="cart-emoji">🍲</div>
+            <div class="cart-info">
+                <h4>{{ item.menu_item.name }}</h4>
+                <div class="qty-controls">
+                    <form method="POST" action="{% url 'update_cart_quantity' item.id %}">
+                        {% csrf_token %}
+                        <button name="action" value="decrease" class="qty-btn">−</button>
+                    </form>
+                    <span class="qty-num">{{ item.quantity }}</span>
+                    <form method="POST" action="{% url 'update_cart_quantity' item.id %}">
+                        {% csrf_token %}
+                        <button name="action" value="increase" class="qty-btn">+</button>
+                    </form>
+                </div>
+            </div>
+            <span class="price">₹{{ item.total_price }}</span>
+            <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+                {% csrf_token %}
+                <button type="submit" class="remove-btn" title="Remove">✕</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="summary-card">
+        <h3>Order Summary</h3>
+        {% for item in items %}
+        <div class="summary-row">
+            <span>{{ item.menu_item.name }} × {{ item.quantity }}</span>
+            <span>₹{{ item.total_price }}</span>
+        </div>
+        {% endfor %}
+        <div class="summary-total">
+            <span>Total</span>
+            <span class="price">₹{{ total }}</span>
+        </div>
+        <a href="{% url 'place_order' %}" class="btn btn-primary btn-full">Place Order →</a>
+        <a href="{% url 'menu' %}" class="btn btn-secondary btn-full" style="margin-top:10px;">+ Add More Items</a>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="icon">🛒</div>
+    <p>Your cart is empty. <a href="{% url 'menu' %}" style="color:var(--accent);font-weight:600;">Browse the menu</a> to add items.</p>
+</div>
+{% endif %}
+{% endblock %}

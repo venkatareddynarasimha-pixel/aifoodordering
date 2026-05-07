@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Add Menu Item — Savoria{% endblock %}
+
+{% block nav_links %}
+<a href="{% url 'owner_dashboard' %}">Dashboard</a>
+<a href="{% url 'logout' %}" class="logout-btn">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+<style>
+    .form-wrap { max-width: 580px; margin: 0 auto; }
+    .form-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-md); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-primary); margin-bottom: 7px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .form-actions .btn { padding: 12px 24px; }
+    textarea { resize: vertical; min-height: 90px; }
+</style>
+
+<div class="form-wrap">
+    <div class="page-header">
+        <h1>➕ Add Menu Item</h1>
+        <p>Add a new dish to your restaurant menu</p>
+    </div>
+
+    <div class="form-card">
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert-error" style="margin-bottom:18px;">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Dish Name *</label>
+                <input type="text" name="name" placeholder="e.g. Butter Chicken" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe the dish, ingredients, etc."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price (₹) *</label>
+                    <input type="number" name="price" step="0.01" min="0" placeholder="e.g. 250" required>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select name="category" required>
+                        <option value="">Select category</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }} ({{ cat.restaurant.name }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Restaurant *</label>
+                <select name="restaurant" required>
+                    <option value="">Select your restaurant</option>
+                    {% for r in restaurants %}
+                    <option value="{{ r.id }}">{{ r.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add to Menu</button>
+                <a href="{% url 'owner_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

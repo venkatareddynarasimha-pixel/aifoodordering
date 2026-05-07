@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Restaurant</title>
+</head>
+<body>
+
+<h2>Add Restaurant</h2>
+
+<form method="post">
+{% csrf_token %}
+
+<label>Restaurant Name</label><br>
+<input type="text" name="name"><br><br>
+
+<label>Phone</label><br>
+<input type="text" name="phone"><br><br>
+
+<label>Address</label><br>
+<input type="text" name="address"><br><br>
+
+<button type="submit">Create Restaurant</button>
+
+</form>
+
+</body>
+</html>

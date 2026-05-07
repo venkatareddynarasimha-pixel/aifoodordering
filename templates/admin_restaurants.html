@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Restaurants — Savoria Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0F1117;--surface:#181C27;--surface2:#1E2336;--border:#2A2F45;--text:#E8EAF0;--muted:#7B82A0;--accent:#6C63FF;--green:#10B981;--yellow:#F59E0B;--red:#FF6B6B;--radius:14px;--sidebar:240px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid var(--border);}
+.logo{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#6C63FF,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.role-pill{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;background:rgba(108,99,255,0.15);color:#9B95FF;font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.nav-section{padding:20px 16px 8px;font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;margin:2px 8px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:0.88rem;font-weight:500;transition:all 0.2s;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(108,99,255,0.15);color:#9B95FF;font-weight:600;}
+.sidebar-bottom{margin-top:auto;padding:16px;}
+.signout-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 20px;border-radius:10px;background:rgba(255,107,107,0.1);color:#FF6B6B;text-decoration:none;font-size:0.88rem;font-weight:600;transition:all 0.2s;border:none;cursor:pointer;}
+.main{margin-left:var(--sidebar);flex:1;padding:32px 36px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.topbar h1{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;}
+.topbar p{color:var(--muted);font-size:0.88rem;margin-top:3px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+.rest-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:transform 0.2s,box-shadow 0.2s;}
+.rest-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.3);}
+.rest-card .rest-icon{width:48px;height:48px;border-radius:12px;background:rgba(108,99,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px;}
+.rest-card .rest-name{font-weight:700;font-size:1rem;margin-bottom:4px;}
+.rest-card .rest-owner{font-size:0.82rem;color:var(--muted);margin-bottom:4px;}
+.rest-card .rest-phone{font-size:0.82rem;color:var(--muted);margin-bottom:14px;}
+.rest-card .rest-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);}
+.badge-active{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;background:rgba(16,185,129,0.15);color:#10B981;}
+.badge-inactive{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;background:rgba(255,107,107,0.1);color:#FF6B6B;}
+.toggle-btn{padding:6px 16px;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;background:rgba(255,255,255,0.06);color:var(--text);}
+.toggle-btn:hover{background:rgba(255,255,255,0.12);}
+.back-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--muted);font-size:0.85rem;padding:8px 14px;border-radius:8px;border:1px solid var(--border);transition:all 0.2s;}
+.back-link:hover{background:var(--surface2);color:var(--text);}
+.total-pill{background:rgba(108,99,255,0.12);color:#9B95FF;padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;}
+.alert-msg{padding:10px 16px;border-radius:8px;margin-bottom:18px;font-size:0.85rem;font-weight:500;background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.2);}
+.empty{padding:60px;text-align:center;color:var(--muted);}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">Savoria</div>
+    <div class="role-pill">⚙️ Admin Panel</div>
+  </div>
+  <div class="nav-section">Overview</div>
+  <a href="{% url 'admin_dashboard' %}" class="nav-item"><span>🏠</span> Dashboard</a>
+  <div class="nav-section">Manage</div>
+  <a href="{% url 'admin_users' %}" class="nav-item"><span>👥</span> Users</a>
+  <a href="{% url 'admin_restaurants' %}" class="nav-item active"><span>🏪</span> Restaurants</a>
+  <a href="{% url 'admin_orders' %}" class="nav-item"><span>📦</span> All Orders</a>
+  <a href="{% url 'menu' %}" class="nav-item"><span>🍽️</span> Menu</a>
+  <div class="sidebar-bottom">
+    <a href="{% url 'logout' %}" class="signout-btn"><span>🚪</span> Sign Out</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div>
+      <h1>🏪 Restaurants</h1>
+      <p>Activate or deactivate restaurants on the platform</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="total-pill">{{ restaurants|length }} total</span>
+      <a href="{% url 'admin_dashboard' %}" class="back-link">← Back</a>
+    </div>
+  </div>
+
+  {% if messages %}{% for m in messages %}<div class="alert-msg">{{ m }}</div>{% endfor %}{% endif %}
+
+  {% if restaurants %}
+  <div class="card-grid">
+    {% for r in restaurants %}
+    <div class="rest-card">
+      <div class="rest-icon">🏪</div>
+      <div class="rest-name">{{ r.name }}</div>
+      <div class="rest-owner">👤 Owner: {{ r.owner.username }}</div>
+      <div class="rest-phone">📞 {{ r.phone }}</div>
+      <div class="rest-footer">
+        {% if r.is_active %}
+        <span class="badge-active">● Active</span>
+        {% else %}
+        <span class="badge-inactive">● Inactive</span>
+        {% endif %}
+        <form method="POST" action="{% url 'admin_toggle_restaurant' r.id %}">
+          {% csrf_token %}
+          <button type="submit" class="toggle-btn">
+            {% if r.is_active %}Deactivate{% else %}Activate{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div style="font-size:2.5rem;margin-bottom:12px;">🏪</div>
+    <p>No restaurants registered yet.</p>
+  </div>
+  {% endif %}
+</main>
+</body>
+</html>

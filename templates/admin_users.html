@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Users — Savoria Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0F1117;--surface:#181C27;--surface2:#1E2336;--border:#2A2F45;--text:#E8EAF0;--muted:#7B82A0;--accent:#6C63FF;--green:#10B981;--yellow:#F59E0B;--blue:#3B82F6;--pink:#EC4899;--red:#FF6B6B;--radius:14px;--sidebar:240px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid var(--border);}
+.sidebar-brand .logo{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#6C63FF,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sidebar-brand .role-pill{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;background:rgba(108,99,255,0.15);color:#9B95FF;font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.nav-section{padding:20px 16px 8px;font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;margin:2px 8px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:0.88rem;font-weight:500;transition:all 0.2s;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(108,99,255,0.15);color:#9B95FF;font-weight:600;}
+.sidebar-bottom{margin-top:auto;padding:16px;}
+.signout-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 20px;border-radius:10px;background:rgba(255,107,107,0.1);color:#FF6B6B;text-decoration:none;font-size:0.88rem;font-weight:600;transition:all 0.2s;border:none;cursor:pointer;}
+.signout-btn:hover{background:rgba(255,107,107,0.2);}
+.main{margin-left:var(--sidebar);flex:1;padding:32px 36px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.topbar h1{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;}
+.topbar p{color:var(--muted);font-size:0.88rem;margin-top:3px;}
+.back-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--muted);font-size:0.85rem;padding:8px 14px;border-radius:8px;border:1px solid var(--border);transition:all 0.2s;}
+.back-link:hover{background:var(--surface2);color:var(--text);}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{padding:12px 18px;text-align:left;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+td{padding:13px 18px;font-size:0.85rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.04);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;}
+.badge-admin{background:rgba(108,99,255,0.15);color:#9B95FF;}
+.badge-owner{background:rgba(236,72,153,0.15);color:#EC4899;}
+.badge-customer{background:rgba(16,185,129,0.15);color:#10B981;}
+.action-row{display:flex;gap:8px;align-items:center;}
+select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:0.82rem;font-family:'Inter',sans-serif;outline:none;cursor:pointer;}
+.btn-sm{padding:5px 14px;border-radius:7px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;}
+.btn-save{background:rgba(108,99,255,0.2);color:#9B95FF;}
+.btn-save:hover{background:rgba(108,99,255,0.35);}
+.btn-del{background:rgba(255,107,107,0.15);color:#FF6B6B;}
+.btn-del:hover{background:rgba(255,107,107,0.3);}
+.total-pill{background:rgba(108,99,255,0.12);color:#9B95FF;padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;}
+.alert-msg{padding:10px 16px;border-radius:8px;margin-bottom:18px;font-size:0.85rem;font-weight:500;background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.2);}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">Savoria</div>
+    <div class="role-pill">⚙️ Admin Panel</div>
+  </div>
+  <div class="nav-section">Overview</div>
+  <a href="{% url 'admin_dashboard' %}" class="nav-item"><span>🏠</span> Dashboard</a>
+  <div class="nav-section">Manage</div>
+  <a href="{% url 'admin_users' %}" class="nav-item active"><span>👥</span> Users</a>
+  <a href="{% url 'admin_restaurants' %}" class="nav-item"><span>🏪</span> Restaurants</a>
+  <a href="{% url 'admin_orders' %}" class="nav-item"><span>📦</span> All Orders</a>
+  <a href="{% url 'menu' %}" class="nav-item"><span>🍽️</span> Menu</a>
+  <div class="sidebar-bottom">
+    <a href="{% url 'logout' %}" class="signout-btn"><span>🚪</span> Sign Out</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div>
+      <h1>👥 Users</h1>
+      <p>Manage all registered accounts and their roles</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="total-pill">{{ users|length }} total</span>
+      <a href="{% url 'admin_dashboard' %}" class="back-link">← Back</a>
+    </div>
+  </div>
+
+  {% if messages %}{% for m in messages %}<div class="alert-msg">{{ m }}</div>{% endfor %}{% endif %}
+
+  <div class="panel">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td style="color:var(--muted);">{{ u.id }}</td>
+          <td style="font-weight:600;">
+            {{ u.username }}
+            {% if u == request.user %}<span style="color:var(--muted);font-size:0.75rem;"> (you)</span>{% endif %}
+          </td>
+          <td style="color:var(--muted);">{{ u.email|default:"—" }}</td>
+          <td>
+            <span class="badge badge-{{ u.userprofile.role|lower }}">{{ u.userprofile.role }}</span>
+          </td>
+          <td style="color:var(--muted);">{{ u.date_joined|date:"d M Y" }}</td>
+          <td>
+            <div class="action-row">
+              <!-- Change role form -->
+              <form method="POST" action="{% url 'admin_change_role' u.id %}" style="display:flex;gap:6px;align-items:center;">
+                {% csrf_token %}
+                <select name="role">
+                  <option value="CUSTOMER" {% if u.userprofile.role == 'CUSTOMER' %}selected{% endif %}>Customer</option>
+                  <option value="OWNER"    {% if u.userprofile.role == 'OWNER'    %}selected{% endif %}>Owner</option>
+                  <option value="ADMIN"    {% if u.userprofile.role == 'ADMIN'    %}selected{% endif %}>Admin</option>
+                </select>
+                <button type="submit" class="btn-sm btn-save">Save</button>
+              </form>
+              <!-- Delete form -->
+              {% if u != request.user %}
+              <form method="POST" action="{% url 'admin_delete_user' u.id %}"
+                    onsubmit="return confirm('Delete user {{ u.username }}? This cannot be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="btn-sm btn-del">Delete</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;">No users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>
